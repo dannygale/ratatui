@@ -35,6 +35,7 @@ use crate::{
     backend::{Backend, ClearType},
     buffer::Buffer,
     layout::Rect,
+    style::CursorStyle,
     widgets::{StatefulWidget, Widget},
 };
 
@@ -386,6 +387,11 @@ where
         self.backend.set_cursor(x, y)?;
         self.last_known_cursor_pos = (x, y);
         Ok(())
+    }
+
+    /// Set the cursor style
+    pub fn set_cursor_style(mut self, style: CursorStyle) -> io::Result<()> {
+        self.backend.set_cursor_style(style)
     }
 
     /// Clear the terminal and force a full redraw on the next draw call.
