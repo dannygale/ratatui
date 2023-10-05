@@ -11,7 +11,7 @@ use crossterm::{
     cursor::{Hide, MoveTo, Show},
     execute, queue,
     style::{
-        self, Attribute as CAttribute, Color as CColor, Print, SetAttribute, SetBackgroundColor,
+        Attribute as CAttribute, Color as CColor, Print, SetAttribute, SetBackgroundColor,
         SetForegroundColor, SetUnderlineColor,
     },
     terminal::{self, Clear},

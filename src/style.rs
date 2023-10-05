@@ -60,15 +60,11 @@
 //! [`prelude`]: crate::prelude
 //! [`Span`]: crate::text::Span
 
-use std::{
-    default,
-    fmt::{self, Debug},
-};
+use std::fmt::{self, Debug};
 
 use bitflags::bitflags;
 
 mod stylize;
-use crossterm::Command;
 pub use stylize::{Styled, Stylize};
 mod color;
 pub use color::Color;

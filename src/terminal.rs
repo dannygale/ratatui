@@ -390,7 +390,7 @@ where
     }
 
     /// Set the cursor style
-    pub fn set_cursor_style(mut self, style: CursorStyle) -> io::Result<()> {
+    pub fn set_cursor_style(&mut self, style: CursorStyle) -> io::Result<()> {
         self.backend.set_cursor_style(style)
     }
 
