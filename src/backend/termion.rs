@@ -13,7 +13,7 @@ use crate::{
     backend::{Backend, ClearType, WindowSize},
     buffer::Cell,
     prelude::Rect,
-    style::{Color, Modifier},
+    style::{Color, CursorStyle, Modifier},
 };
 
 /// A [`Backend`] implementation that uses [Termion] to render to the terminal.
@@ -140,6 +140,24 @@ where
     fn set_cursor(&mut self, x: u16, y: u16) -> io::Result<()> {
         write!(self.writer, "{}", termion::cursor::Goto(x + 1, y + 1))?;
         self.writer.flush()
+    }
+
+    fn set_cursor_style(&mut self, style: CursorStyle) -> io::Result<()> {
+        match style {
+            CursorStyle::DefaultUserShape => {
+                write!(self.writer, "{}", termion::cursor::SteadyBlock)
+            }
+            CursorStyle::BlinkingBlock => write!(self.writer, "{}", termion::cursor::BlinkingBlock),
+            CursorStyle::SteadyBlock => write!(self.writer, "{}", termion::cursor::SteadyBlock),
+            CursorStyle::BlinkingUnderScore => {
+                write!(self.writer, "{}", termion::cursor::BlinkingUnderline)
+            }
+            CursorStyle::SteadyUnderScore => {
+                write!(self.writer, "{}", termion::cursor::SteadyUnderline)
+            }
+            CursorStyle::BlinkingBar => write!(self.writer, "{}", termion::cursor::BlinkingBar),
+            CursorStyle::SteadyBar => write!(self.writer, "{}", termion::cursor::SteadyBar),
+        }
     }
 
     fn draw<'a, I>(&mut self, content: I) -> io::Result<()>

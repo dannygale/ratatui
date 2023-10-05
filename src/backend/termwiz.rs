@@ -11,7 +11,7 @@ use termwiz::{
     caps::Capabilities,
     cell::{AttributeChange, Blink, Intensity, Underline},
     color::{AnsiColor, ColorAttribute, SrgbaTuple},
-    surface::{Change, CursorVisibility, Position},
+    surface::{Change, CursorShape, CursorVisibility, Position},
     terminal::{buffered::BufferedTerminal, ScreenSize, SystemTerminal, Terminal},
 };
 
@@ -20,7 +20,7 @@ use crate::{
     buffer::Cell,
     layout::Size,
     prelude::Rect,
-    style::{Color, Modifier},
+    style::{Color, CursorStyle, Modifier},
 };
 
 /// A [`Backend`] implementation that uses [Termwiz] to render to the terminal.
@@ -204,6 +204,21 @@ impl Backend for TermwizBackend {
             y: Position::Absolute(y as usize),
         });
 
+        Ok(())
+    }
+
+    fn set_cursor_style(&mut self, style: CursorStyle) -> io::Result<()> {
+        let shape = match style {
+            CursorStyle::DefaultUserShape => CursorShape::Default,
+            CursorStyle::BlinkingBlock => CursorShape::BlinkingBlock,
+            CursorStyle::SteadyBlock => CursorShape::SteadyBlock,
+            CursorStyle::BlinkingUnderScore => CursorShape::BlinkingUnderline,
+            CursorStyle::SteadyUnderScore => CursorShape::SteadyUnderline,
+            CursorStyle::BlinkingBar => CursorShape::BlinkingBar,
+            CursorStyle::SteadyBar => CursorShape::SteadyBar,
+        };
+        self.buffered_terminal
+            .add_change(Change::CursorShape(shape));
         Ok(())
     }
 

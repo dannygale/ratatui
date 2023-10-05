@@ -2,16 +2,20 @@
 //! the [Crossterm] crate to interact with the terminal.
 //!
 //! [Crossterm]: https://crates.io/crates/crossterm
-use std::io::{self, Write};
+use std::{
+    fmt,
+    io::{self, Write},
+};
 
 use crossterm::{
     cursor::{Hide, MoveTo, Show},
     execute, queue,
     style::{
-        Attribute as CAttribute, Color as CColor, Print, SetAttribute, SetBackgroundColor,
+        self, Attribute as CAttribute, Color as CColor, Print, SetAttribute, SetBackgroundColor,
         SetForegroundColor, SetUnderlineColor,
     },
     terminal::{self, Clear},
+    Command,
 };
 
 use crate::{
@@ -19,7 +23,7 @@ use crate::{
     buffer::Cell,
     layout::Size,
     prelude::Rect,
-    style::{Color, Modifier},
+    style::{Color, CursorStyle, Modifier},
 };
 
 /// A [`Backend`] implementation that uses [Crossterm] to render to the terminal.
@@ -186,6 +190,10 @@ where
         execute!(self.writer, MoveTo(x, y))
     }
 
+    fn set_cursor_style(&mut self, style: CursorStyle) -> io::Result<()> {
+        execute!(self.writer, style)
+    }
+
     fn clear(&mut self) -> io::Result<()> {
         self.clear_region(ClearType::All)
     }
@@ -259,6 +267,25 @@ impl From<Color> for CColor {
             Color::Indexed(i) => CColor::AnsiValue(i),
             Color::Rgb(r, g, b) => CColor::Rgb { r, g, b },
         }
+    }
+}
+
+impl Command for CursorStyle {
+    fn write_ansi(&self, f: &mut impl fmt::Write) -> fmt::Result {
+        match self {
+            CursorStyle::DefaultUserShape => f.write_str("\x1b[0 q"),
+            CursorStyle::BlinkingBlock => f.write_str("\x1b[1 q"),
+            CursorStyle::SteadyBlock => f.write_str("\x1b[2 q"),
+            CursorStyle::BlinkingUnderScore => f.write_str("\x1b[3 q"),
+            CursorStyle::SteadyUnderScore => f.write_str("\x1b[4 q"),
+            CursorStyle::BlinkingBar => f.write_str("\x1b[5 q"),
+            CursorStyle::SteadyBar => f.write_str("\x1b[6 q"),
+        }
+    }
+
+    #[cfg(windows)]
+    fn execute_winapi(&self) -> std::io::Result<()> {
+        Ok(())
     }
 }
 

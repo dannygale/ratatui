@@ -60,11 +60,15 @@
 //! [`prelude`]: crate::prelude
 //! [`Span`]: crate::text::Span
 
-use std::fmt::{self, Debug};
+use std::{
+    default,
+    fmt::{self, Debug},
+};
 
 use bitflags::bitflags;
 
 mod stylize;
+use crossterm::Command;
 pub use stylize::{Styled, Stylize};
 mod color;
 pub use color::Color;
@@ -359,6 +363,18 @@ impl Style {
 
         self
     }
+}
+
+#[derive(Default)]
+pub enum CursorStyle {
+    #[default]
+    SteadyBlock,
+    DefaultUserShape,
+    BlinkingBlock,
+    SteadyUnderScore,
+    BlinkingUnderScore,
+    SteadyBar,
+    BlinkingBar,
 }
 
 #[cfg(test)]

@@ -103,7 +103,7 @@ use std::io;
 
 use strum::{Display, EnumString};
 
-use crate::{buffer::Cell, layout::Size, prelude::Rect};
+use crate::{buffer::Cell, layout::Size, prelude::Rect, style::CursorStyle};
 
 #[cfg(feature = "termion")]
 mod termion;
@@ -226,6 +226,14 @@ pub trait Backend {
     ///
     /// [`get_cursor`]: Backend::get_cursor
     fn set_cursor(&mut self, x: u16, y: u16) -> io::Result<()>;
+
+    /// Set the cursor style
+    ///
+    /// The default is a solid block
+    ///
+    /// # Example
+    /// TODO
+    fn set_cursor_style(&mut self, style: CursorStyle) -> io::Result<()>;
 
     /// Clears the whole terminal scree
     ///

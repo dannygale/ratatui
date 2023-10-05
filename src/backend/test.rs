@@ -12,6 +12,7 @@ use crate::{
     backend::{Backend, WindowSize},
     buffer::{Buffer, Cell},
     layout::{Rect, Size},
+    style::CursorStyle,
 };
 
 /// A [`Backend`] implementation used for integration testing that that renders to an in memory
@@ -172,6 +173,10 @@ impl Backend for TestBackend {
     fn set_cursor(&mut self, x: u16, y: u16) -> Result<(), io::Error> {
         self.pos = (x, y);
         Ok(())
+    }
+
+    fn set_cursor_style(&mut self, _style: CursorStyle) -> Result<(), io::Error> {
+        todo!();
     }
 
     fn clear(&mut self) -> Result<(), io::Error> {
